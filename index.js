@@ -91,7 +91,7 @@ app.post(`/logout`, (req, res) => {
   res.cookie(`token`, ``).json(`ok`)
 })
 
-app.post(`/post`, uploadMd.single(`file`), async (req, res) => {
+app.post(`/create`, uploadMd.single(`file`), async (req, res) => {
   const { originalname, path } = req.file
   const div = originalname.split(`.`)
   const extension = div[div.length - 1].toLowerCase()
@@ -115,7 +115,7 @@ app.post(`/post`, uploadMd.single(`file`), async (req, res) => {
   })
 })
 
-app.put(`/post`, uploadMd.single(`file`), async (req, res) => {
+app.put(`/edit`, uploadMd.single(`file`), async (req, res) => {
   let newPath = null
   if (req.file) {
     const { originalname, path } = req.file
