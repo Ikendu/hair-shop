@@ -19,10 +19,15 @@ dotenv.config()
 
 app.use(
   cors({
-    origin: '*',
+    origin: 'https://hairview.onrender.com',
     credentials: true,
   })
 )
+app.all('/', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With')
+  next()
+})
 
 app.use(express.json())
 app.use(cookieParser())
@@ -31,12 +36,6 @@ app.use(`/uploads`, express.static(__dirname + `/uploads`))
 const MONGO_URL = `mongodb+srv://ecomm:11111234Aa@cluster0.cuu14a6.mongodb.net/?retryWrites=true&w=majority`
 
 mongoose.connect(process.env.MONGO_URL)
-
-app.all('/', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'X-Requested-With')
-  next()
-})
 
 app.post(`/register`, async (req, res) => {
   const { name, email, password } = req.body
