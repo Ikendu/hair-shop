@@ -17,31 +17,31 @@ const secretJwt = `fsgsyuewy643873vncxm0q34kjd048,znahfuaoghdfj3400232`
 const app = express()
 dotenv.config()
 
-// app.use(
-//   cors({
-//     origin: 'https://hairview.onrender.com',
-//     credentials: true,
-//   })
-// )
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  })
+)
 // app.all('/', function (req, res, next) {
 //   res.header('Access-Control-Allow-Origin', 'https://hairview.onrender.com')
 //   res.header('Access-Control-Allow-Headers', 'X-Requested-With')
 //   next()
 // })
 
-const corsOptions = {
-  origin: '*',
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-}
+// const corsOptions = {
+//   origin: '*',
+//   credentials: true, //access-control-allow-credentials:true
+//   optionSuccessStatus: 200,
+// }
 
-app.use(cors(corsOptions))
+// app.use(cors(corsOptions))
 
 app.use(express.json())
 app.use(cookieParser())
 app.use(`/uploads`, express.static(__dirname + `/uploads`))
 
-const MONGO_URL = `mongodb+srv://ecomm:11111234Aa@cluster0.cuu14a6.mongodb.net/?retryWrites=true&w=majority`
+//const MONGO_URL = `mongodb+srv://ecomm:11111234Aa@cluster0.cuu14a6.mongodb.net/?retryWrites=true&w=majority`
 
 mongoose.connect(process.env.MONGO_URL)
 
