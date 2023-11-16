@@ -17,17 +17,25 @@ const secretJwt = `fsgsyuewy643873vncxm0q34kjd048,znahfuaoghdfj3400232`
 const app = express()
 dotenv.config()
 
-app.use(
-  cors({
-    origin: 'https://hairview.onrender.com',
-    credentials: true,
-  })
-)
-app.all('/', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'https://hairview.onrender.com')
-  res.header('Access-Control-Allow-Headers', 'X-Requested-With')
-  next()
-})
+// app.use(
+//   cors({
+//     origin: 'https://hairview.onrender.com',
+//     credentials: true,
+//   })
+// )
+// app.all('/', function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', 'https://hairview.onrender.com')
+//   res.header('Access-Control-Allow-Headers', 'X-Requested-With')
+//   next()
+// })
+
+const corsOptions = {
+  origin: '*',
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+}
+
+app.use(cors(corsOptions))
 
 app.use(express.json())
 app.use(cookieParser())
