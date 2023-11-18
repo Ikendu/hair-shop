@@ -106,9 +106,7 @@ app.post(`/create`, uploadMd.single(`file`), async (req, res, next) => {
       author: info.id,
     })
     res.json(userPost)
-    res.json(info)
   })
-  next()
 })
 
 app.put(`/edit`, uploadMd.single(`file`), async (req, res) => {
@@ -150,13 +148,11 @@ app.get(`/product/:id`, async (req, res, next) => {
   const { id } = req.params
   const product = await Post.findById(id).populate(`author`, [`name`, `email`])
   res.json(product)
-  next()
 })
 app.delete(`/delete/:id`, async (req, res, next) => {
   const { id } = req.params
   const result = await Post.findByIdAndDelete(id)
   res.json(result)
-  next()
 })
 
 const PORT = process.env.PORT || 4000
