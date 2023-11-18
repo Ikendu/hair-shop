@@ -19,29 +19,22 @@ dotenv.config()
 
 app.use(
   cors({
-    origin: 'https://hairview.onrender.com',
+    origin: 'http://localhost:5173',
+    // origin: 'https://hairview.onrender.com',
     credentials: true,
   })
 )
-// app.all('/', function (req, res, next) {
-//   res.header('Access-Control-Allow-Origin', 'https://hairview.onrender.com')
-//   res.header('Access-Control-Allow-Headers', 'X-Requested-With')
-//   next()
-// })
-
-// const corsOptions = {
-//   origin: '*',
-//   credentials: true, //access-control-allow-credentials:true
-//   optionSuccessStatus: 200,
-// }
-
-// app.use(cors(corsOptions))
+app.all('/', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With')
+  next()
+})
 
 app.use(express.json())
 app.use(cookieParser())
 app.use(`/uploads`, express.static(__dirname + `/uploads`))
 
-//const MONGO_URL = `mongodb+srv://ecomm:11111234Aa@cluster0.cuu14a6.mongodb.net/?retryWrites=true&w=majority`
+const MONGO_URL = `mongodb+srv://ecomm:11111234Aa@cluster0.cuu14a6.mongodb.net/?retryWrites=true&w=majority`
 
 mongoose.connect(process.env.MONGO_URL)
 
@@ -64,7 +57,7 @@ app.post(`/login`, async (req, res) => {
     //login
     // let token = await jwt.sign({ email, id: userDoc._id }, secretJwt)
     // res.json(token)
-    jwt.sign({ name, id: userDoc._id }, secretJwt, {}, (err, token) => {
+    jwt.sign({ name, id: userDoc._id, email: userDoc.email }, secretJwt, {}, (err, token) => {
       if (err) throw err
       else {
         res.cookie(`token`, token).json({
@@ -79,19 +72,20 @@ app.post(`/login`, async (req, res) => {
 })
 
 //to use cookie(name) on the Navbar
-app.get(`/profile`, (req, res) => {
+app.get(`/profile`, (req, res, next) => {
   const { token } = req.cookies
   jwt.verify(token, secretJwt, {}, (err, info) => {
     if (err) throw err
     else res.json(info)
   })
+  next()
 })
 
 app.post(`/logout`, (req, res) => {
   res.cookie(`token`, ``).json(`ok`)
 })
 
-app.post(`/create`, uploadMd.single(`file`), async (req, res) => {
+app.post(`/create`, uploadMd.single(`file`), async (req, res, next) => {
   const { originalname, path } = req.file
   const div = originalname.split(`.`)
   const extension = div[div.length - 1].toLowerCase()
@@ -112,7 +106,9 @@ app.post(`/create`, uploadMd.single(`file`), async (req, res) => {
       author: info.id,
     })
     res.json(userPost)
+    res.json(info)
   })
+  next()
 })
 
 app.put(`/edit`, uploadMd.single(`file`), async (req, res) => {
@@ -144,21 +140,29 @@ app.put(`/edit`, uploadMd.single(`file`), async (req, res) => {
   })
 })
 
-app.get(`/products`, async (req, res) => {
+app.get(`/products`, async (req, res, next) => {
   const products = await Post.find().populate(`author`, [`name`, `email`]).sort({ createdAt: -1 })
   //.limit(20)
   res.json(products)
+  next()
 })
-app.get(`/product/:id`, async (req, res) => {
+app.get(`/product/:id`, async (req, res, next) => {
   const { id } = req.params
   const product = await Post.findById(id).populate(`author`, [`name`, `email`])
   res.json(product)
+  next()
 })
-app.delete(`/delete/:id`, async (req, res) => {
+app.delete(`/delete/:id`, async (req, res, next) => {
   const { id } = req.params
   const result = await Post.findByIdAndDelete(id)
   res.json(result)
+  next()
 })
 
 const PORT = process.env.PORT || 4000
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+
+if (PORT) {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+}
+
+module.exports = app
