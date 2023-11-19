@@ -21,8 +21,10 @@ app.use(
     origin: ['http://localhost:5173', 'https://hairview.onrender.com'],
     credentials: true,
     headers: ['Content-Type'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 )
+app.options('*', cors())
 
 app.all('/', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
