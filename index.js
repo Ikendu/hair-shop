@@ -18,8 +18,9 @@ dotenv.config()
 
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://hairview.onrender.com', `uploads/`],
+    origin: ['http://localhost:5173', 'https://hairview.onrender.com'],
     credentials: true,
+    headers: ['Content-Type'],
   })
 )
 
