@@ -19,11 +19,14 @@ dotenv.config()
 
 app.use(
   cors({
-    // origin: 'http://localhost:5173',
-    origin: 'https://hairview.onrender.com',
+    origin: ['http://localhost:5173', 'https://hairview.onrender.com'],
     credentials: true,
   })
 )
+var corsOptions = {
+  origin: ['http://localhost:5173', 'https://hairview.onrender.com'],
+  optionsSuccessStatus: 200,
+}
 app.all('/', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'X-Requested-With')
@@ -85,7 +88,7 @@ app.post(`/logout`, (req, res) => {
   res.cookie(`token`, ``).json(`ok`)
 })
 
-app.post(`/create`, uploadMd.single(`file`), async (req, res, next) => {
+app.post(`/create`, cors(corsOptions), uploadMd.single(`file`), async (req, res, next) => {
   const { originalname, path } = req.file
   const div = originalname.split(`.`)
   const extension = div[div.length - 1].toLowerCase()
