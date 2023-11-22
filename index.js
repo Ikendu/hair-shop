@@ -16,14 +16,21 @@ const secretJwt = `fsgsyuewy643873vncxm0q34kjd048,znahfuaoghdfj3400232`
 const app = express()
 dotenv.config()
 
-app.use(cors())
+app.use(
+  cors({
+    origin: ['http://localhost:5173', 'https://hairview.onrender.com'],
+    credentials: true,
+    headers: ['Content-Type'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+)
 app.options('*', cors())
 
-// app.all('/', function (req, res, next) {
-//   res.header('Access-Control-Allow-Origin', '*')
-//   res.header('Access-Control-Allow-Headers', 'X-Requested-With')
-//   next()
-// })
+app.all('/', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With')
+  next()
+})
 const uploadMd = multer({ dest: `uploads/` })
 
 app.use(express.json())
